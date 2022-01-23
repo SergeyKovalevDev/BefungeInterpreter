@@ -2,7 +2,9 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
 public class BefungeInterpreter {
-    private char[][] field = new char[25][80];
+    private final int numOfLines = 25;
+    private final int numOfColumns = 80;
+    private char[][] field = new char[numOfLines][numOfColumns];
     LinkedList <Integer> stack = new LinkedList<>();
     private final int[] moveRight = new int[] {0, 1};
     private final int[] moveLeft = new int[] {0, -1};
@@ -13,94 +15,21 @@ public class BefungeInterpreter {
     private final int columnIndex = 1;
     int[] position = new int[] {0, 0};
     int[] moveDirection = moveRight;
+    boolean stringMode = false;
+    boolean endOfProgram = false;
 
     public String interpret(String code) {
         field = getCodesField(code);
-        boolean stringMode = false;
-        boolean endOfProgram = false;
         while (!endOfProgram) {
             char command = getCommand(position[lineIndex], position[columnIndex]);
             if (stringMode) {
-                if (command != '"') pushASCII(command);
+                if (command != '"') pushAsASCII(command);
                 else stringMode = false;
             } else {
                 if (command >= '0' && command <= '9') {
                     stack.push(Character.getNumericValue(command));
                 } else {
-                    switch (command) {
-                        case '+':
-                            addition();
-                            break;
-                        case '-':
-                            subtraction();
-                            break;
-                        case '*':
-                            multiplication();
-                            break;
-                        case '/':
-                            integerDivision();
-                            break;
-                        case '%':
-                            modulo();
-                            break;
-                        case '!':
-                            logicalNOT();
-                            break;
-                        case '`':
-                            greaterThan();
-                            break;
-                        case '>':
-                            moveDirection = moveRight;
-                            break;
-                        case '<':
-                            moveDirection = moveLeft;
-                            break;
-                        case '^':
-                            moveDirection = moveUp;
-                            break;
-                        case 'v':
-                            moveDirection = moveDown;
-                            break;
-                        case '?':
-                            moveDirection = getRandomDirection();
-                            break;
-                        case '_':
-                            moveDirection = popGorizontalDirection();
-                            break;
-                        case '|':
-                            moveDirection = popVerticalDirection();
-                            break;
-                        case '"':
-                            stringMode = true;
-                            break;
-                        case ':':
-                            duplicateTopOfStack();
-                            break;
-                        case '\\':
-                            swapTopOfStack();
-                            break;
-                        case '$':
-                            discardTopOfStack();
-                            break;
-                        case '.':
-                            outputAsInteger();
-                            break;
-                        case ',':
-                            outputAsCharacter();
-                            break;
-                        case '#':
-                            skipNextCell();
-                            break;
-                        case 'p':
-                            putCall();
-                            break;
-                        case 'g':
-                            getCall();
-                            break;
-                        case '@':
-                            endOfProgram = true;
-                            break;
-                    }
+                    commandExecute(command);
                 }
             }
             stepForward();
@@ -109,14 +38,98 @@ public class BefungeInterpreter {
         return resultString.toString();
     }
 
-    private void pushASCII(char command) {
+    private void commandExecute(char command) {
+        switch (command) {
+            case '+':
+                addition();
+                break;
+            case '-':
+                subtraction();
+                break;
+            case '*':
+                multiplication();
+                break;
+            case '/':
+                integerDivision();
+                break;
+            case '%':
+                modulo();
+                break;
+            case '!':
+                logicalNOT();
+                break;
+            case '`':
+                greaterThan();
+                break;
+            case '>':
+                moveDirection = moveRight;
+                break;
+            case '<':
+                moveDirection = moveLeft;
+                break;
+            case '^':
+                moveDirection = moveUp;
+                break;
+            case 'v':
+                moveDirection = moveDown;
+                break;
+            case '?':
+                moveDirection = getRandomDirection();
+                break;
+            case '_':
+                moveDirection = popGorizontalDirection();
+                break;
+            case '|':
+                moveDirection = popVerticalDirection();
+                break;
+            case '"':
+                stringMode = true;
+                break;
+            case ':':
+                duplicateTopOfStack();
+                break;
+            case '\\':
+                swapTopOfStack();
+                break;
+            case '$':
+                discardTopOfStack();
+                break;
+            case '.':
+                outputAsInteger();
+                break;
+            case ',':
+                outputAsASCII();
+                break;
+            case '#':
+                skipNextCell();
+                break;
+            case 'p':
+                putCall();
+                break;
+            case 'g':
+                getCall();
+                break;
+            case '@':
+                endOfProgram = true;
+                break;
+        }
+    }
+
+    private void pushAsASCII(char command) {
         stack.push((int) command);
     }
 
     private void getCall() {
+        int line = stack.pop();
+        int column = stack.pop();
+        pushAsASCII(getCommand(line, column));
     }
 
     private void putCall() {
+        int line = stack.pop();
+        int column = stack.pop();
+        int value = stack.pop();
+        putCommand(line, column, (char) value);
     }
 
     private void skipNextCell() {
@@ -128,7 +141,7 @@ public class BefungeInterpreter {
         position[columnIndex] += moveDirection[columnIndex];
     }
 
-    private void outputAsCharacter() {
+    private void outputAsASCII() {
         resultString.append((char) ((int) stack.pop()));
     }
 
@@ -201,6 +214,10 @@ public class BefungeInterpreter {
 
     private char getCommand(int line, int column) {
         return field[line][column];
+    }
+
+    private void putCommand(int line, int column, char command) {
+        field[line][column] = command;
     }
 
     private void addition() {
