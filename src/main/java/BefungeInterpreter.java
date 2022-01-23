@@ -241,9 +241,4 @@ public class BefungeInterpreter {
         int a = stack.pop();
         stack.push(a == 1 ? 0 : 1);
     }
-
-    public static void main(String[] args) {
-        BefungeInterpreter b = new BefungeInterpreter();
-        System.out.println(b.interpret(">987v>.v\nv456<  :\n>321 ^ _@"));
-    }
 }
