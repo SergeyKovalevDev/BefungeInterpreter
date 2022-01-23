@@ -28,30 +28,78 @@ public class BefungeInterpreter {
                     stack.push(Character.getNumericValue(command));
                 } else {
                     switch (command) {
-                        case '+' -> addition();
-                        case '-' -> subtraction();
-                        case '*' -> multiplication();
-                        case '/' -> integerDivision();
-                        case '%' -> modulo();
-                        case '!' -> logicalNOT();
-                        case '`' -> greaterThan();
-                        case '>' -> moveDirection = moveRight;
-                        case '<' -> moveDirection = moveLeft;
-                        case '^' -> moveDirection = moveUp;
-                        case 'v' -> moveDirection = moveDown;
-                        case '?' -> moveDirection = getRandomDirection();
-                        case '_' -> moveDirection = popGorizontalDirection();
-                        case '|' -> moveDirection = popVerticalDirection();
-                        case '"' -> stringMode = true;
-                        case ':' -> duplicateTopOfStack();
-                        case '\\' -> swapTopOfStack();
-                        case '$' -> discardTopOfStack();
-                        case '.' -> outputAsInteger();
-                        case ',' -> outputAsCharacter();
-                        case '#' -> skipNextCell();
-                        case 'p' -> putCall();
-                        case 'g' -> getCall();
-                        case '@' -> endOfProgram = true;
+                        case '+':
+                            addition();
+                            break;
+                        case '-':
+                            subtraction();
+                            break;
+                        case '*':
+                            multiplication();
+                            break;
+                        case '/':
+                            integerDivision();
+                            break;
+                        case '%':
+                            modulo();
+                            break;
+                        case '!':
+                            logicalNOT();
+                            break;
+                        case '`':
+                            greaterThan();
+                            break;
+                        case '>':
+                            moveDirection = moveRight;
+                            break;
+                        case '<':
+                            moveDirection = moveLeft;
+                            break;
+                        case '^':
+                            moveDirection = moveUp;
+                            break;
+                        case 'v':
+                            moveDirection = moveDown;
+                            break;
+                        case '?':
+                            moveDirection = getRandomDirection();
+                            break;
+                        case '_':
+                            moveDirection = popGorizontalDirection();
+                            break;
+                        case '|':
+                            moveDirection = popVerticalDirection();
+                            break;
+                        case '"':
+                            stringMode = true;
+                            break;
+                        case ':':
+                            duplicateTopOfStack();
+                            break;
+                        case '\\':
+                            swapTopOfStack();
+                            break;
+                        case '$':
+                            discardTopOfStack();
+                            break;
+                        case '.':
+                            outputAsInteger();
+                            break;
+                        case ',':
+                            outputAsCharacter();
+                            break;
+                        case '#':
+                            skipNextCell();
+                            break;
+                        case 'p':
+                            putCall();
+                            break;
+                        case 'g':
+                            getCall();
+                            break;
+                        case '@':
+                            endOfProgram = true;
+                            break;
                     }
                 }
             }
@@ -123,12 +171,16 @@ public class BefungeInterpreter {
     }
 
     private int[] getRandomDirection() {
-        return switch ((int) Math.round(Math.random() * 3.0)) {
-            case 0 -> moveRight;
-            case 1 -> moveLeft;
-            case 2 -> moveDown;
-            default -> moveUp;
-        };
+        switch ((int) Math.round(Math.random() * 3.0)) {
+            case 0:
+                return moveRight;
+            case 1:
+                return moveLeft;
+            case 2:
+                return moveDown;
+            default:
+                return moveUp;
+        }
     }
 
     private void greaterThan() {
