@@ -184,7 +184,7 @@ public class BefungeInterpreter {
     }
 
     private int[] getRandomDirection() {
-        switch ((int) Math.round(Math.random() * 3.0)) {
+        switch ((int) Math.round(Math.random() * 3)) {
             case 0:
                 return moveRight;
             case 1:
@@ -256,6 +256,6 @@ public class BefungeInterpreter {
 
     private void logicalNOT() {
         int a = stack.pop();
-        stack.push(a == 1 ? 0 : 1);
+        stack.push(a == 0 ? 1 : 0);
     }
 }
