@@ -184,7 +184,7 @@ public class BefungeInterpreter {
     }
 
     private int[] getRandomDirection() {
-        switch ((int) Math.round(Math.random() * 3)) {
+        switch ((int) (Math.random() * 4)) {
             case 0:
                 return moveRight;
             case 1:
@@ -241,17 +241,13 @@ public class BefungeInterpreter {
     private void integerDivision() {
         int a =  stack.pop();
         int b =  stack.pop();
-        try {
-            stack.push(b / a);
-        } catch (ArithmeticException e) {
-            stack.push(0);
-        }
+        stack.push(a == 0 ? 0 : b / a);
     }
 
     private void modulo() {
         int a =  stack.pop();
         int b =  stack.pop();
-        stack.push(b % a);
+        stack.push(a == 0 ? 0 : b % a);
     }
 
     private void logicalNOT() {
